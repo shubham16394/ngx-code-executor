@@ -1,0 +1,69 @@
+.editor-wrap {
+    height: 100vh;
+}
+
+/* Center the button (optional, adjust as needed) */
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Execute button styling */
+.execute-button {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    /* Gradient background */
+    border: none;
+    border-radius: 50px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 15px 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-transform: uppercase;
+    /* Optional for uppercase text */
+}
+
+/* Hover effect */
+.execute-button:hover {
+    transform: scale(1.05);
+    /* Slightly enlarge the button */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #2575fc, #6a11cb);
+    /* Reverse gradient */
+}
+
+/* Focus effect */
+.execute-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.5);
+}
+
+/* Active state */
+.execute-button:active {
+    transform: scale(0.98);
+    /* Slightly shrink the button */
+}
+
+.code-editor-container {
+    height: 300px;
+    border: 1px solid #ccc;
+  }
+  .controls {
+    margin: 10px 0;
+  }
+  .output {
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .sandbox {
+    width: 100%;
+    height: 200px;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+  }
