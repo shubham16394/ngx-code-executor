@@ -6,8 +6,16 @@
   </ngx-monaco-editor>
 </div>
 
-<!-- <div class="button-container">
+<div class="button-container">
   <button class="execute-button" (click)="executeCode()">Execute</button>
-</div> -->
+</div>
+
+<div class="output-container">
+  <h3>Output</h3>
+  <div id="output" #output></div>
+</div>
+
+<!-- Iframe for executing code -->
+<iframe id="codeFrame" #codeFrame sandbox="allow-scripts allow-same-origin" [src]="iframeUrl"></iframe>
 
 
