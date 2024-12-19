@@ -1,6 +1,6 @@
 /* Adjusted default height for the editor container */
 .code-editor-container {
-  height: 400px; /* Set a smaller default height */
+  height: 70vh; /* Set a smaller default height */
   max-height: 70vh; /* Ensure it doesn't exceed 70% of the viewport height */
   display: flex;
   flex-direction: column;
