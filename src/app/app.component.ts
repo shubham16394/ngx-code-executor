@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EditorComponent } from 'ngx-monaco-editor-v2';
 import { DomSanitizer } from '@angular/platform-browser';
-
 @Component({
   selector: 'app-root',
   imports: [CommonModule, FormsModule, EditorComponent],
@@ -27,15 +26,17 @@ export class AppComponent{
     wrappingIndent: 'indent',
     theme: 'vs-dark',
   };
+  isExecuting: boolean = false;
+  lightTheme = true;
   code: any = `
-function example() {
-  console.log(this);
+greet();
+        
+function greet() {
+    console.log("Hello, World!");
 }
-
-example();`;
+`;
   iframeUrl: any;
   constructor(private sanitizer: DomSanitizer) {
-    console.log('this.code', this.code)
     this.iframeUrl = this.sanitizer.bypassSecurityTrustResourceUrl('iframe.html')
   }
 
@@ -48,8 +49,12 @@ example();`;
 
     try {
       // Use eval to execute code inside the iframe's contentWindow
-      (iframe.contentWindow as any)?.eval(code);
+      if(code) {
+        this.isExecuting = true;
+        (iframe.contentWindow as any)?.eval(code);
+      }
     } catch (err) {
+      this.isExecuting = false;
       this.outputDiv.nativeElement.innerHTML += `<p><strong>Error:</strong> ${err}</p>`;
     }
   }
@@ -57,6 +62,7 @@ example();`;
   // Listener for messages from the iframe
   @HostListener('window:message', ['$event'])
   onMessage(event: MessageEvent) {
+    this.isExecuting = false;
     if (event.origin !== window.origin) return;
 
     if (event.data.type === 'log') {

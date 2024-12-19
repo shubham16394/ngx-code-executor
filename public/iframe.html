@@ -4,57 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iframe Executor</title>
+    <!-- Load Flatted first -->
+    <script src="https://cdn.jsdelivr.net/npm/flatted@3.2.2/min.js"></script>
 </head>
 <body>
 
 <script>
-// Listen for messages from the parent window
-// window.addEventListener('message', function(event) {
-//     // Ensure message is from the same origin (parent page)
-//     if (event.origin !== window.origin) return;
+// Custom serialization logic for special objects
+function stringifySpecialObjects(data) {
+    if(data === undefined || data === null) {
+        return data + '';
+    }
+    if (data === window) {
+        // Provide a meaningful string representation
+        return Flatted.stringify(data);
+    }
+    if (data instanceof HTMLElement) {
+        return `<${data.tagName.toLowerCase()} id="${data.id}" class="${data.className}">`;
+    }
+    if (typeof data === 'function') {
+        return `function ${data.name || '(anonymous)'}() { ... }`;
+    }
+    if (typeof data === 'object' && data !== null) {
+        if (isCircular(data)) {
+            return Flatted.stringify(data); // Serialize circular objects
+        } else {
+            return JSON.stringify(data, null, 2); // Pretty-print non-circular objects
+        }
+    }
+    return data; // Return primitive values (string, number, etc.) as-is
+}
 
-//     if (event.data.type === 'execute') {
-//         const code = event.data.code;
+// Check if an object has circular references
+function isCircular(obj) {
+    try {
+        JSON.stringify(obj);
+        return false; // No circular reference
+    } catch (e) {
+        return true; // Circular reference detected
+    }
+}
 
-//         // Overriding console.log to send logs back to parent window
-//         const originalLog = console.log;
-//         console.log = function(...args) {
-//             parent.postMessage({ type: 'log', message: args.join(' ') }, '*');
-//             originalLog.apply(console, args);
-//         };
+// Serialize data for postMessage
+function safeSerialize(data) {
+    try {
+        return stringifySpecialObjects(data);
+    } catch (e) {
+        console.error('Serialization error:', e);
+        return '[Unserializable]';
+    }
+}
 
-//         // Overriding console.error to send errors back to parent window
-//         const originalError = console.error;
-//         console.error = function(...args) {
-//             parent.postMessage({ type: 'error', message: args.join(' ') }, '*');
-//             originalError.apply(console, args);
-//         };
-
-//         // Execute the JavaScript code
-//         try {
-//             // new Function(code)();
-//             console.log(code)
-//             console.log(window)
-//             eval(code);
-//         } catch (e) {
-//             parent.postMessage({ type: 'error', message: e.message }, '*');
-//         }
-//     }
-// });
-
-// Overriding console.log to send logs back to the parent
+// Override console.log to send logs back to the parent
 const originalLog = console.log;
 console.log = function(...args) {
-    parent.console.log(...args);  // Send log to the parent window
-    parent.postMessage({ type: 'log', message: args.join(' ') }, '*');
+    const serializedArgs = args.map(arg => safeSerialize(arg));
+    parent.postMessage({ type: 'log', message: serializedArgs }, '*');
     originalLog.apply(console, args);
 };
 
-// Overriding console.error to send errors back to the parent
+// Override console.error to send errors back to the parent
 const originalError = console.error;
 console.error = function(...args) {
-    parent.console.error(...args);  // Send error to the parent window
-    parent.postMessage({ type: 'error', message: args.join(' ') }, '*');
+    const serializedArgs = args.map(arg => safeSerialize(arg));
+    parent.postMessage({ type: 'error', message: serializedArgs }, '*');
     originalError.apply(console, args);
 };
 </script>

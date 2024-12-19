@@ -1,21 +1,31 @@
-<div class="editor-wrap">
+<h1 class="heading">NgxCodeExecutor Playground</h1>
+<div class="code-editor-container">
   <ngx-monaco-editor
-      style="height: 50%"
-      [options]="editorOptions"
-      [(ngModel)]="code">
-  </ngx-monaco-editor>
+    [options]="editorOptions"
+    [(ngModel)]="code"
+    class="code-editor"
+  ></ngx-monaco-editor>
 </div>
 
 <div class="button-container">
   <button class="execute-button" (click)="executeCode()">Execute</button>
 </div>
 
-<div class="output-container">
-  <h3>Output</h3>
-  <div id="output" #output></div>
+<div class="loader-overlay" *ngIf="isExecuting">
+  <div class="loader"></div>
+  <p>Executing your code...</p>
 </div>
 
-<!-- Iframe for executing code -->
-<iframe id="codeFrame" #codeFrame sandbox="allow-scripts allow-same-origin" [src]="iframeUrl"></iframe>
+<div class="output-container">
+  <h3>Execution Result</h3>
+  <div class="output" #output></div>
+</div>
 
-
+<!-- Hidden iframe for code execution -->
+<iframe
+  id="codeFrame"
+  #codeFrame
+  class="sandbox"
+  sandbox="allow-scripts allow-same-origin"
+  [src]="iframeUrl"
+></iframe>
