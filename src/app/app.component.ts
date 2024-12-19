@@ -15,7 +15,7 @@ export class AppComponent{
   @ViewChild('output') outputDiv!: ElementRef;
   iframeContent: string = '';
   outputStream: string[] = [];
-  title = 'ngx-code-executor';
+  title = 'JS-code-executor';
   editorOptions = {
     language: 'typescript',
     minimap: { enabled: false },
